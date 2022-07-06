@@ -14,17 +14,20 @@ public class PlayerManager : MonoBehaviour
     public void PlayerTookKey()
     {
         playerHaveKey = true;
-        //cameraKey.SetActive(true);
+        cameraKey.SetActive(true);
     }
 
     public void ShowHint(bool show)
     {
-        //putKeyHint.SetActive(show);
+        putKeyHint.SetActive(show);
     }
 
     public void UseKey()
     {
+        if (!playerHaveKey)
+            return;
         playerHaveKey = false;
-        //cameraKey.SetActive(false);
+        cameraKey.SetActive(false);
+        DoorManager.instance.OpenDoor();
     }
 }

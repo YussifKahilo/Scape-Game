@@ -78,7 +78,7 @@ public class ScalePower : MonoBehaviour , PlayerPower
                 timeElapsed = 0;
             }
         }
-        //effectColor.SetActive(scaleChanging);
+        effectColor.SetActive(scaleChanging);
         GetComponent<PlayerController>().Speed = Mathf.Ceil( (transform.localScale.y + 0.65f ) * 2 );
     }
 

@@ -5,13 +5,20 @@ using UnityEngine;
 public class Door : MonoBehaviour
 {
     [SerializeField] GameObject doorKey;
+    [SerializeField] Animator anim;
+    float dis = 2f;
 
-    // Update is called once per frame
+    private void Start()
+    {
+        anim = GetComponent<Animator>();
+        doorKey.SetActive(false);
+    }
+
     void Update()
     {
-        bool scalePlayerHint = Vector3.Distance(doorKey.transform.position, GameManager.instance.scalePlayer.transform.position) < 1
+        bool scalePlayerHint = Vector3.Distance(doorKey.transform.position, GameManager.instance.scalePlayer.transform.position) < dis
             && GameManager.instance.scalePlayer.GetComponent<PlayerManager>().PlayerHaveKey;
-        bool positionPlayerHint = Vector3.Distance(doorKey.transform.position, GameManager.instance.positionPlayer.transform.position) < 1
+        bool positionPlayerHint = Vector3.Distance(doorKey.transform.position, GameManager.instance.positionPlayer.transform.position) < dis
              && GameManager.instance.positionPlayer.GetComponent<PlayerManager>().PlayerHaveKey;
 
         GameManager.instance.scalePlayer.GetComponent<PlayerManager>().ShowHint(scalePlayerHint);
@@ -21,6 +28,6 @@ public class Door : MonoBehaviour
     public void Open()
     {
         doorKey.SetActive(true);
-        Destroy(gameObject);
+        anim.SetBool("Open" , true);
     }
 }

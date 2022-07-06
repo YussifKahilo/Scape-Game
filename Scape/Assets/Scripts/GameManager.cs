@@ -47,6 +47,9 @@ public class GameManager : MonoBehaviour
         positionPlayer.GetComponent<PlayerController>().CameraHolder.transform.GetChild(0).GetChild(0).GetChild(0)
             .GetComponent<UnityEngine.UI.Image>().color = positionColor;
 
+        positionPlayer.GetComponent<PlayerController>().CameraHolder.transform.GetChild(0).GetChild(0).SetParent(null);
+
+        Destroy(positionPlayer.transform.GetChild(positionPlayer.transform.childCount - 1).gameObject);
         Destroy(positionPlayer.GetComponent<ScalePower>());
     }
 
@@ -64,7 +67,10 @@ public class GameManager : MonoBehaviour
         scalePlayer.GetComponent<PlayerController>().CameraHolder.transform.GetChild(0).GetChild(0).GetChild(0)
             .GetComponent<UnityEngine.UI.Image>().color = scaleColor;
 
-        Destroy(GetComponent<UnityEngine.AI.NavMeshAgent>());
+        scalePlayer.GetComponent<PlayerController>().CameraHolder.transform.GetChild(0).GetChild(0).SetParent(null);
+
+        Destroy(scalePlayer.GetComponent<UnityEngine.AI.NavMeshAgent>());
+
         Destroy(scalePlayer.GetComponent<PositionPower>());
     }
 
@@ -93,6 +99,7 @@ public class GameManager : MonoBehaviour
     void SetRoom()
     {
         RoomManager.instance.SetRoom(currentRoom);
+
         DoorManager.instance.NextDoor = RoomManager.instance.CurrentRoom.RoomDoor;
     }
 }

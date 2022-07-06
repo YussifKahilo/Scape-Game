@@ -19,8 +19,7 @@ public class RoomManager : MonoBehaviour
 
     public void SetRoom(int room)
     {
-        currentRoom = rooms[room - 1].GetComponent<Room>();
-        Instantiate(currentRoom.gameObject);
+        currentRoom = Instantiate(rooms[room - 1]).GetComponent<Room>();
         if (room < rooms.Length)
         {
             Instantiate(rooms[room]);
