@@ -53,8 +53,8 @@ public class PauseManager : MonoBehaviour
         isGamePaused = !isGamePaused;
         Time.timeScale = isGamePaused ? 0 : 1;
         pausePanel.SetActive(isGamePaused);
-        gameManager.player1.GetComponent<PlayerController>().enabled = !isGamePaused;
-        gameManager.player2.GetComponent<PlayerController>().enabled = !isGamePaused;
+        gameManager.positionPlayer.GetComponent<PlayerController>().enabled = !isGamePaused;
+        gameManager.scalePlayer.GetComponent<PlayerController>().enabled = !isGamePaused;
     }
 
     public void SettingsPanelView()
@@ -86,26 +86,26 @@ public class PauseManager : MonoBehaviour
         PlayerPrefs.SetInt(isKeyboard? pp_MouseSens : pp_StickSens, value);
         if (isKeyboard)
         {
-            if (settingsManager.isPlayer1Keyboard)
+            if (settingsManager.isPositionPlayerKeyboard)
             {
-                gameManager.player1.GetComponent<PlayerController>().senstivity = value;
+                gameManager.positionPlayer.GetComponent<PlayerController>().senstivity = value;
             }
             else
             {
-                gameManager.player2.GetComponent<PlayerController>().senstivity = value;
+                gameManager.scalePlayer.GetComponent<PlayerController>().senstivity = value;
             }
             mouseSens.value = value;
             mouseSensText.text = "" + value ;
         }
         else
         {
-            if (settingsManager.isPlayer1Keyboard)
+            if (settingsManager.isPositionPlayerKeyboard)
             {
-                gameManager.player2.GetComponent<PlayerController>().senstivity = value;
+                gameManager.scalePlayer.GetComponent<PlayerController>().senstivity = value;
             }
             else
             {
-                gameManager.player1.GetComponent<PlayerController>().senstivity = value;
+                gameManager.positionPlayer.GetComponent<PlayerController>().senstivity = value;
             }
             stickSens.value = value;
             stickSensText.text = "" + value;

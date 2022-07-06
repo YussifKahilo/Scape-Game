@@ -199,7 +199,7 @@ public class MenuManager : MonoBehaviour
 
     public void StartGame()
     {
-        settingsManager.isPlayer1Keyboard = keyboardCurrentPosition == 0;
+        settingsManager.isPositionPlayerKeyboard = keyboardCurrentPosition == 0;
         SceneManager.LoadScene(SceneManager.GetActiveScene().buildIndex + 1);
     }
 

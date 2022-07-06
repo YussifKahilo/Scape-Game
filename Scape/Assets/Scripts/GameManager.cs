@@ -10,8 +10,8 @@ public class GameManager : MonoBehaviour
     [SerializeField] GameObject keyboardPlayerPrefab;
     [SerializeField] Transform[] points;
 
-    public GameObject player1;
-    public GameObject player2;
+    public GameObject scalePlayer;
+    public GameObject positionPlayer;
 
     SettingsManager settingsManager;
 
@@ -28,17 +28,25 @@ public class GameManager : MonoBehaviour
 
     public void SetSpitView()
     {
-        player1.GetComponent<PlayerController>().cameraHolder.transform.GetChild(0).GetComponent<Camera>().rect = settingsManager.GetPlayer1SplitView();
-        player2.GetComponent<PlayerController>().cameraHolder.transform.GetChild(0).GetComponent<Camera>().rect = settingsManager.GetPlayer2SplitView();
+        scalePlayer.GetComponent<PlayerController>().cameraHolder.transform.GetChild(0).GetComponent<Camera>().rect = settingsManager.GetPlayer1SplitView();
+        positionPlayer.GetComponent<PlayerController>().cameraHolder.transform.GetChild(0).GetComponent<Camera>().rect = settingsManager.GetPlayer2SplitView();
     }
 
     void StartGame()
     {
-        player1 = Instantiate(settingsManager.isPlayer1Keyboard ? keyboardPlayerPrefab : joystickPlayerPrefab
+        positionPlayer = Instantiate(settingsManager.isPositionPlayerKeyboard ? keyboardPlayerPrefab : joystickPlayerPrefab
             , points[0].position , points[0].rotation);
 
-        player2 = Instantiate(settingsManager.isPlayer1Keyboard ? joystickPlayerPrefab : keyboardPlayerPrefab
+        positionPlayer.GetComponent<PlayerController>().anim = positionPlayer.transform.GetChild(0).GetChild(0).GetComponent<Animator>();
+        Destroy(positionPlayer.transform.GetChild(0).GetChild(1).gameObject);
+
+
+
+        scalePlayer = Instantiate(settingsManager.isPositionPlayerKeyboard ? joystickPlayerPrefab : keyboardPlayerPrefab
             , points[1].position, points[1].rotation);
+
+        scalePlayer.GetComponent<PlayerController>().anim = scalePlayer.transform.GetChild(0).GetChild(1).GetComponent<Animator>();
+        Destroy(scalePlayer.transform.GetChild(0).GetChild(0).gameObject);
 
         SetSpitView();
     }

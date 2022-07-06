@@ -7,7 +7,7 @@ public class SettingsManager : MonoBehaviour
 {
     public bool isVerticalSplitScreen;
 
-    public bool isPlayer1Keyboard;
+    public bool isPositionPlayerKeyboard;
 
     [SerializeField] Rect p1V, p2V, p1H, p2H;
 

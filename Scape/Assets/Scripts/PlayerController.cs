@@ -11,6 +11,7 @@ public class PlayerController : MonoBehaviour
     [SerializeField] Vector2 inputLooking;
     [SerializeField] int speed;
     [SerializeField] int jumpForce;
+    public Animator anim;
     float verticalLookRotation;
     public int senstivity;
     bool isGrounded = false;
@@ -73,6 +74,8 @@ public class PlayerController : MonoBehaviour
 
     private void FixedUpdate()
     {
+        print((int)(speed * inputMovement.magnitude));
+        anim.SetInteger("Speed" , (int)(speed * inputMovement.magnitude));
         transform.Translate(inputMovement * speed * Time.fixedDeltaTime);
     }
 
@@ -108,6 +111,7 @@ public class PlayerController : MonoBehaviour
 
     void Jump()
     {
+        anim.SetTrigger("Jump");
         rb.AddForce(transform.up * jumpForce, ForceMode.Impulse);
     }
 
