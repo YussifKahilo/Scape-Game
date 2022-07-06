@@ -5,16 +5,29 @@ using UnityEngine.InputSystem;
 
 public class PlayerController : MonoBehaviour
 {
-    public GameObject cameraHolder;
+    [SerializeField] GameObject cameraHolder;
     Rigidbody rb;
     [SerializeField] Vector3 inputMovement;
     [SerializeField] Vector2 inputLooking;
-    [SerializeField] int speed;
-    [SerializeField] int jumpForce;
-    public Animator anim;
+    [SerializeField] private int jumpForce;
+    private float speed = 4;
+    private PlayerPower power;
+    [SerializeField] private Animator anim;
+    [SerializeField] private int senstivity;
     float verticalLookRotation;
-    public int senstivity;
     bool isGrounded = false;
+
+    internal PlayerPower Power { get => power; set => power = value; }
+
+    internal Animator Anim { get => anim; set => anim = value; }
+
+    internal int Senstivity { get => senstivity; set => senstivity = value; }
+
+    internal int JumpForce { get => jumpForce; set => jumpForce = value; }
+
+    internal float Speed { get => speed; set => speed = value; }
+
+    internal GameObject CameraHolder { get => cameraHolder; set => cameraHolder = value; }
 
     public void OnMovement(InputAction.CallbackContext value)
     {
@@ -74,8 +87,7 @@ public class PlayerController : MonoBehaviour
 
     private void FixedUpdate()
     {
-        print((int)(speed * inputMovement.magnitude));
-        anim.SetInteger("Speed" , (int)(speed * inputMovement.magnitude));
+        anim.SetFloat("Speed" ,speed * inputMovement.magnitude);
         transform.Translate(inputMovement * speed * Time.fixedDeltaTime);
     }
 
@@ -101,12 +113,12 @@ public class PlayerController : MonoBehaviour
 
     void Power1()
     {
-
+        power.Power1();
     }
 
     void Power2()
     {
-
+        power.Power2();
     }
 
     void Jump()
@@ -117,6 +129,6 @@ public class PlayerController : MonoBehaviour
 
     void Use()
     {
-
+        GetComponent<PlayerManager>().UseKey();
     }
 }

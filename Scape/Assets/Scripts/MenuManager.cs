@@ -38,9 +38,12 @@ public class MenuManager : MonoBehaviour
     [SerializeField] Toggle verticalToggle;
     [SerializeField] Toggle horizontalToggle;
 
-    private int keyboardCurrentPosition= 1 , joystickCurrentPosition =1;
+    [Header("Players Sens")]
+    [SerializeField] Slider mouseSens;
+    [SerializeField] Slider stickSens;
+    [SerializeField] Text mouseSensText, stickSensText;
 
-    private SettingsManager settingsManager;
+    private int keyboardCurrentPosition= 1 , joystickCurrentPosition =1;
 
     private bool isSettingsPanelOpen = false , isGamePanelOpen = false;
 
@@ -85,9 +88,11 @@ public class MenuManager : MonoBehaviour
 
     void Start()
     {
-        settingsManager = FindObjectOfType<SettingsManager>();
-        verticalToggle.isOn = settingsManager.isVerticalSplitScreen;
-        horizontalToggle.isOn = !settingsManager.isVerticalSplitScreen;
+        verticalToggle.isOn = SettingsManager.instance.isVerticalSplitScreen;
+        horizontalToggle.isOn = !verticalToggle.isOn;
+
+        SetSens(true, SettingsManager.instance.mouseSens);
+        SetSens(false, SettingsManager.instance.stickSens);
     }
 
     private void Update()
@@ -199,7 +204,7 @@ public class MenuManager : MonoBehaviour
 
     public void StartGame()
     {
-        settingsManager.isPositionPlayerKeyboard = keyboardCurrentPosition == 0;
+        SettingsManager.instance.isPositionPlayerKeyboard = keyboardCurrentPosition == 0;
         SceneManager.LoadScene(SceneManager.GetActiveScene().buildIndex + 1);
     }
 
@@ -228,7 +233,7 @@ public class MenuManager : MonoBehaviour
 
     public void SaveSettings()
     {
-        settingsManager.SetView(verticalToggle.isOn);
+        SettingsManager.instance.SetView(verticalToggle.isOn);
     }
 
     public void QuitGame()
@@ -333,5 +338,30 @@ public class MenuManager : MonoBehaviour
             p1Images[imageIndex].SetActive(true);
         }
 
+    }
+
+    public void MouseSensChanged(float value)
+    {
+        SetSens(true, (int)value);
+    }
+
+    public void StickSensChanged(float value)
+    {
+        SetSens(false, (int)value);
+    }
+
+    void SetSens(bool isKeyboard, int value)
+    {
+        SettingsManager.instance.SetSens(isKeyboard ,value);
+        if (isKeyboard)
+        {
+            mouseSens.value = value;
+            mouseSensText.text = "" + value;
+        }
+        else
+        {
+            stickSens.value = value;
+            stickSensText.text = "" + value;
+        }
     }
 }
