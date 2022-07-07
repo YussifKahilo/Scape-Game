@@ -43,6 +43,19 @@ public class MenuManager : MonoBehaviour
     [SerializeField] Slider stickSens;
     [SerializeField] Text mouseSensText, stickSensText;
 
+    [Header("Sound Menu")]
+    [SerializeField] Text soundText;
+    [SerializeField] Text musicText;
+    [SerializeField] Slider soundSlider;
+    [SerializeField] Slider musicSlider;
+    [SerializeField] Toggle soundToggle;
+    [SerializeField] Toggle musicToggle;
+
+    [Header("Managers")]
+    [SerializeField] GameObject settingsManager;
+    [SerializeField] GameObject musicManager;
+    [SerializeField] GameObject soundManager;
+
     private int keyboardCurrentPosition= 1 , joystickCurrentPosition =1;
 
     private bool isSettingsPanelOpen = false , isGamePanelOpen = false , isControlListOpen = false;
@@ -58,6 +71,9 @@ public class MenuManager : MonoBehaviour
             else if (isSettingsPanelOpen)
             {
                 SettingsPanelView();
+            }else if (isControlListOpen)
+            {
+                ControlsListView();
             }
         }
     }
@@ -88,11 +104,26 @@ public class MenuManager : MonoBehaviour
 
     void Start()
     {
+        CreateManagers();
+
         verticalToggle.isOn = SettingsManager.instance.isVerticalSplitScreen;
         horizontalToggle.isOn = !verticalToggle.isOn;
 
         SetSens(true, SettingsManager.instance.mouseSens);
         SetSens(false, SettingsManager.instance.stickSens);
+
+        MusicToggleChanged(SettingsManager.instance.musicNotMuted);
+        SoundToggleChanged(SettingsManager.instance.soundNotMuted);
+
+        MusicVolumeChanged(SettingsManager.instance.musicVolume);
+        SoundVolumeChanged(SettingsManager.instance.soundVolume);
+    }
+
+    void CreateManagers()
+    {
+        Instantiate(settingsManager);
+        Instantiate(soundManager);
+        Instantiate(musicManager);
     }
 
     private void Update()
@@ -100,6 +131,11 @@ public class MenuManager : MonoBehaviour
         SetReadyToggels();
 
         startGameBtn.SetActive(p1Toggle.isOn && p2Toggle.isOn);
+    }
+
+    public void PlayToggleSound()
+    {
+        SoundManager.instance.PlaySound(SoundManager.instance.buttonClick);
     }
 
     void SetPlayerReady(bool isKeyboard)
@@ -160,6 +196,7 @@ public class MenuManager : MonoBehaviour
                     break;
             }
         }
+        SoundManager.instance.PlaySound(SoundManager.instance.playerReady);
     }
 
     void SetReadyToggels()
@@ -199,17 +236,18 @@ public class MenuManager : MonoBehaviour
         {
             p2ReadyText.text = "Unready";
         }
-
     }
 
     public void StartGame()
     {
+        SoundManager.instance.PlaySound(SoundManager.instance.buttonClick);
         SettingsManager.instance.isPositionPlayerKeyboard = keyboardCurrentPosition == 0;
         SceneManager.LoadScene(SceneManager.GetActiveScene().buildIndex + 1);
     }
 
     public void GamePanelView()
     {
+        SoundManager.instance.PlaySound(SoundManager.instance.buttonClick);
         ResetSelecting();
         isGamePanelOpen = !isGamePanelOpen;
         gamePanel.SetActive(isGamePanelOpen);
@@ -217,6 +255,7 @@ public class MenuManager : MonoBehaviour
 
     public void ControlsListView()
     {
+        SoundManager.instance.PlaySound(SoundManager.instance.buttonClick);
         isControlListOpen = !isControlListOpen;
         controlListPanel.SetActive(isControlListOpen);
     }
@@ -231,6 +270,7 @@ public class MenuManager : MonoBehaviour
 
     public void SettingsPanelView()
     {
+        SoundManager.instance.PlaySound(SoundManager.instance.buttonClick);
         if (isSettingsPanelOpen)
             SaveSettings();
         isSettingsPanelOpen = !isSettingsPanelOpen;
@@ -240,10 +280,12 @@ public class MenuManager : MonoBehaviour
     public void SaveSettings()
     {
         SettingsManager.instance.SetView(verticalToggle.isOn);
+        SettingsManager.instance.SaveSound((int)musicSlider.value , (int)soundSlider.value , musicToggle.isOn , soundToggle.isOn);
     }
 
     public void QuitGame()
     {
+        SoundManager.instance.PlaySound(SoundManager.instance.buttonClick);
         Application.Quit();
     }
 
@@ -262,21 +304,14 @@ public class MenuManager : MonoBehaviour
     {
         if (isKeyboard)
         {
-            if (keyboardCurrentPosition + position == joystickCurrentPosition && joystickCurrentPosition != 1)
+            if (keyboardCurrentPosition + position == joystickCurrentPosition && joystickCurrentPosition != 1
+                || keyboardCurrentPosition + position < 0 || keyboardCurrentPosition + position > 2)
             {
                 return;
             }
 
             keyboardCurrentPosition += position;
 
-            if (keyboardCurrentPosition <= 0)
-            {
-                keyboardCurrentPosition = 0;
-            }
-            else if (keyboardCurrentPosition >= 2)
-            {
-                keyboardCurrentPosition = 2;
-            }
             for (int i = 0; i < 3; i++)
             {
                 keyboard[i].SetActive(false);
@@ -285,27 +320,21 @@ public class MenuManager : MonoBehaviour
         }
         else
         {
-            if (joystickCurrentPosition + position == keyboardCurrentPosition && keyboardCurrentPosition != 1)
+            if (joystickCurrentPosition + position == keyboardCurrentPosition && keyboardCurrentPosition != 1
+                || joystickCurrentPosition + position < 0 || joystickCurrentPosition + position > 2)
             {
                 return;
             }
 
             joystickCurrentPosition += position;
 
-            if (joystickCurrentPosition <= 0)
-            {
-                joystickCurrentPosition = 0;
-            }
-            else if (joystickCurrentPosition >= 2)
-            {
-                joystickCurrentPosition = 2;
-            }
             for (int i = 0; i < 3; i++)
             {
                 joystick[i].SetActive(false);
             }
             joystick[joystickCurrentPosition].SetActive(true);
         }
+        SoundManager.instance.PlaySound(SoundManager.instance.playerSelect);
     }
 
     void SetHintImage()
@@ -369,5 +398,27 @@ public class MenuManager : MonoBehaviour
             stickSens.value = value;
             stickSensText.text = "" + value;
         }
+    }
+
+    public void MusicVolumeChanged(float value)
+    {
+        SettingsManager.instance.musicVolume = (int)value;
+        musicText.text = (int)value + "";
+    }
+
+    public void SoundVolumeChanged(float value)
+    {
+        SettingsManager.instance.soundVolume = (int)value;
+        soundText.text = (int)value + "";
+    }
+
+    public void MusicToggleChanged(bool value)
+    {
+        SettingsManager.instance.musicNotMuted = value;
+    }
+
+    public void SoundToggleChanged(bool value)
+    {
+        SettingsManager.instance.soundNotMuted = value;
     }
 }

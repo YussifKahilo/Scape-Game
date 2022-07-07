@@ -6,20 +6,17 @@ using UnityEngine.InputSystem;
 public class PlayerController : MonoBehaviour
 {
     [SerializeField] GameObject cameraHolder;
-    Rigidbody rb;
-    [SerializeField] Vector3 inputMovement;
-    [SerializeField] Vector2 inputLooking;
-    [SerializeField] private int jumpForce;
+    private Rigidbody rb;
+    private Vector3 inputMovement;
+    private Vector2 inputLooking;
+    private int jumpForce = 5;
     private float speed = 4;
     private PlayerPower power;
-    [SerializeField] private Animator anim;
-    [SerializeField] private int senstivity;
-    float verticalLookRotation;
-    bool isGrounded = false;
+    private int senstivity;
+    private float verticalLookRotation;
+    private bool isGrounded = true;
 
     internal PlayerPower Power { get => power; set => power = value; }
-
-    internal Animator Anim { get => anim; set => anim = value; }
 
     internal int Senstivity { get => senstivity; set => senstivity = value; }
 
@@ -87,8 +84,8 @@ public class PlayerController : MonoBehaviour
 
     private void FixedUpdate()
     {   
-        anim.SetFloat("Speed" ,speed * inputMovement.magnitude);
         transform.Translate(inputMovement * speed * Time.fixedDeltaTime);
+        GetComponent<PlayerAnimation>().SetAnimation(inputMovement);
     }
 
     private void LateUpdate()
@@ -98,6 +95,7 @@ public class PlayerController : MonoBehaviour
 
     public void SetGroundedState(bool state)
     {
+        GetComponent<PlayerAnimation>().SetJumping(!state);
         isGrounded = state;
     }
 
@@ -123,12 +121,13 @@ public class PlayerController : MonoBehaviour
 
     void Jump()
     {
-        anim.SetTrigger("Jump");
         rb.AddForce(transform.up * jumpForce, ForceMode.Impulse);
+        SoundManager.instance.PlaySound(SoundManager.instance.jump);
     }
 
     void Use()
     {
         GetComponent<PlayerManager>().UseKey();
     }
+    
 }

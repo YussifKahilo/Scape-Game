@@ -27,6 +27,8 @@ public class ScalePower : MonoBehaviour , PlayerPower
 
     public void Power1()
     {
+        if (!canChangeScale)
+            return;
         ChangeScale(1);
     }
 
@@ -37,7 +39,7 @@ public class ScalePower : MonoBehaviour , PlayerPower
 
     void ChangeScale(int scale)
     {
-        if (scaleLevel  + scale == -1 || scaleLevel + scale == 3 || scaleChanging || !canChangeScale)
+        if (scaleLevel  + scale == -1 || scaleLevel + scale == 3 || scaleChanging)
         {
             return;
         }
@@ -53,6 +55,8 @@ public class ScalePower : MonoBehaviour , PlayerPower
         newEffectScale = effectScales[scaleLevel];
 
         GetComponent<PlayerController>().JumpForce = scaleLevel == 0 ? 2 : scaleLevel == 1 ? 5 : 13;
+
+        SoundManager.instance.PlaySound(SoundManager.instance.scalePower);
 
         GetComponent<Rigidbody>().mass = scaleLevel == 0 ? 0.75f : scaleLevel == 1 ? 1f : 2f;
         scaleChanging = true;

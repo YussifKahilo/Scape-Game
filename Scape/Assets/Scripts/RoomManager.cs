@@ -8,6 +8,7 @@ public class RoomManager : MonoBehaviour
 
     private Room currentRoom;
     private Room nextRoom;
+    private Room afterNextRoom;
 
     public static RoomManager instance;
 
@@ -29,31 +30,45 @@ public class RoomManager : MonoBehaviour
             currentRoom = nextRoom;
         }
 
-        if (room < rooms.Length)
+        if (afterNextRoom != null)
         {
-            nextRoom = Instantiate(rooms[room]).GetComponent<Room>();
+            nextRoom = afterNextRoom;
             DoorManager.instance.NextDoor = nextRoom.RoomDoor;
         }
         else
         {
-            nextRoom = null;
+            if (room < rooms.Length)
+            {
+                nextRoom = Instantiate(rooms[room]).GetComponent<Room>();
+                DoorManager.instance.NextDoor = nextRoom.RoomDoor;
+            }
+            else
+            {
+                nextRoom = null;
+                PauseManager.instance.winPanel.SetActive(true);
+            }
+        }
+
+        if (room + 1 < rooms.Length)
+        {
+            afterNextRoom = Instantiate(rooms[room + 1]).GetComponent<Room>();
+        }
+        else
+        {
+            afterNextRoom = null;
         }
     }
 
-    void LoadNewRoom()
+    public void LoadNewRoom()
     {
         DoorManager.instance.CloseDoor();
         GameManager.instance.CurrentRoom++;
         GameManager.instance.positionPlayer.GetComponent<PositionPower>().CancelPower();
-        SetRoom(GameManager.instance.CurrentRoom);
-    }
-
-    private void Update()
-    {
-        if (nextRoom != null && nextRoom.NumberOfPlayersInRoom == 2)
+        if (afterNextRoom == null)
         {
-            LoadNewRoom();
+            return;
         }
+        SetRoom(GameManager.instance.CurrentRoom);
     }
 
 }

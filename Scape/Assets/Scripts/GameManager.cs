@@ -17,6 +17,8 @@ public class GameManager : MonoBehaviour
 
     private int currentRoom = 1;
 
+    public bool isTutorial = true;
+
     public static GameManager instance;
 
     internal int CurrentRoom { get => currentRoom; set => currentRoom = value; }
@@ -41,7 +43,7 @@ public class GameManager : MonoBehaviour
             keyboardPlayerPrefab : joystickPlayerPrefab, SpawnManager.instance.GetRoomPoint1(currentRoom).position,
             SpawnManager.instance.GetRoomPoint1(currentRoom).rotation);
 
-        positionPlayer.GetComponent<PlayerController>().Anim = positionPlayer.transform.GetChild(0).GetChild(0).GetComponent<Animator>();
+        positionPlayer.GetComponent<PlayerAnimation>().Anim = positionPlayer.transform.GetChild(0).GetChild(0).GetComponent<Animator>();
         Destroy(positionPlayer.transform.GetChild(0).GetChild(1).gameObject);
 
         positionPlayer.GetComponent<PlayerController>().Power = positionPlayer.GetComponent<PositionPower>();
@@ -62,7 +64,7 @@ public class GameManager : MonoBehaviour
             joystickPlayerPrefab : keyboardPlayerPrefab, SpawnManager.instance.GetRoomPoint2(currentRoom).position,
             SpawnManager.instance.GetRoomPoint2(currentRoom).rotation);
 
-        scalePlayer.GetComponent<PlayerController>().Anim = scalePlayer.transform.GetChild(0).GetChild(1).GetComponent<Animator>();
+        scalePlayer.GetComponent<PlayerAnimation>().Anim = scalePlayer.transform.GetChild(0).GetChild(1).GetComponent<Animator>();
         Destroy(scalePlayer.transform.GetChild(0).GetChild(0).gameObject);
 
         scalePlayer.GetComponent<PlayerController>().Power = scalePlayer.GetComponent<ScalePower>();
@@ -76,6 +78,17 @@ public class GameManager : MonoBehaviour
         Destroy(scalePlayer.GetComponent<UnityEngine.AI.NavMeshAgent>());
 
         Destroy(scalePlayer.GetComponent<PositionPower>());
+
+    }
+
+    IEnumerator SetTutorial()
+    {
+        yield return new WaitForSeconds(3f);
+        scalePlayer.GetComponent<Tutorial>().positionTurotial.SetActive(false);
+        positionPlayer.GetComponent<Tutorial>().scaleTutorial.SetActive(false);
+
+        positionPlayer.GetComponent<Tutorial>().positionTurotial.transform.parent.gameObject.SetActive(true);
+        scalePlayer.GetComponent<Tutorial>().scaleTutorial.transform.parent.gameObject.SetActive(true);
 
     }
 
@@ -94,6 +107,8 @@ public class GameManager : MonoBehaviour
 
         SetRoom();
         SetSpitView();
+
+        StartCoroutine(SetTutorial());
     }
 
     private void Update()
@@ -113,6 +128,22 @@ public class GameManager : MonoBehaviour
     void SetRoom()
     {
         RoomManager.instance.SetRoom(currentRoom);
+    }
+
+    public void EndTutorial()
+    {
+        positionPlayer.GetComponent<PositionPower>().CancelPower();
+
+        Destroy(positionPlayer.GetComponent<Tutorial>().positionTurotial.transform.parent.gameObject);
+        Destroy(positionPlayer.GetComponent<Tutorial>());
+
+        Destroy(scalePlayer.GetComponent<Tutorial>().scaleTutorial.transform.parent.gameObject);
+        Destroy(scalePlayer.GetComponent<Tutorial>());
+
+        TutorialManager.instance.firstRoomKey.SetActive(true);
+        Destroy(TutorialManager.instance);
+
+        isTutorial = false;
     }
 }
 

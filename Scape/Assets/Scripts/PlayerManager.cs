@@ -68,10 +68,45 @@ public class PlayerManager : MonoBehaviour
 
     public void UseKey()
     {
-        if (!playerHaveKey)
-            return;
-        playerHaveKey = false;
-        cameraKey.SetActive(false);
-        DoorManager.instance.OpenDoor();
+        bool openDoor = false;
+
+        if (GameManager.instance.isTutorial)
+        {
+            if (GetComponent<PositionPower>() != null)
+            {
+                openDoor = TutorialManager.instance.positionDoor.canPositionOpenDoor;
+            }
+            else
+            {
+                openDoor = TutorialManager.instance.scaleDoor.canScaleOpenDoor;
+            }
+        }
+        else
+        {
+            openDoor = (DoorManager.instance.NextDoor.canPositionOpenDoor && GetComponent<PositionPower>() != null) ||
+            (DoorManager.instance.NextDoor.canScaleOpenDoor && GetComponent<ScalePower>() != null);
+        }
+
+        if (openDoor)
+        {
+            SoundManager.instance.PlaySound(SoundManager.instance.putKey);
+            playerHaveKey = false;
+            cameraKey.SetActive(false);
+            if (GameManager.instance.isTutorial)
+            {
+                if (GetComponent<PositionPower>() != null)
+                {
+                    TutorialManager.instance.positionDoor.Open();
+                }
+                else
+                {
+                    TutorialManager.instance.scaleDoor.Open();
+                }
+            }
+            else
+            {
+                DoorManager.instance.OpenDoor();
+            }
+        }
     }
 }

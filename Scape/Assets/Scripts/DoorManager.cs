@@ -4,7 +4,7 @@ using UnityEngine;
 
 public class DoorManager : MonoBehaviour
 {
-    private Door nextDoor;
+    [SerializeField] Door nextDoor;
 
     public static DoorManager instance;
 
@@ -17,7 +17,10 @@ public class DoorManager : MonoBehaviour
 
     private void Update()
     {
-        nextDoor.LocatePlayer();
+        if (!GameManager.instance.isTutorial)
+        {
+            nextDoor.LocatePlayer();
+        }
     }
 
     public void OpenDoor()
