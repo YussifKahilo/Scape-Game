@@ -6,7 +6,7 @@ using UnityEngine.SceneManagement;
 
 public class PauseManager : MonoBehaviour
 {
-    [SerializeField] GameObject pausePanel, settingsPanel;
+    [SerializeField] GameObject pausePanel, settingsPanel , controlListPanel;
     [SerializeField] Toggle verticalToggle , horizontalToggle;
 
     [SerializeField] Slider mouseSens, stickSens;
@@ -14,6 +14,7 @@ public class PauseManager : MonoBehaviour
 
     bool isGamePaused = false;
     bool isSettingsPanelOpen = false;
+    bool isControlListOpen = false;
 
     public static PauseManager instance;
 
@@ -43,6 +44,11 @@ public class PauseManager : MonoBehaviour
         PausePanelView();
     }
 
+    public void Restart()
+    {
+
+    }
+
     void PausePanelView()
     {
         isGamePaused = !isGamePaused;
@@ -50,6 +56,12 @@ public class PauseManager : MonoBehaviour
         pausePanel.SetActive(isGamePaused);
         GameManager.instance.positionPlayer.GetComponent<PlayerController>().enabled = !isGamePaused;
         GameManager.instance.scalePlayer.GetComponent<PlayerController>().enabled = !isGamePaused;
+    }
+
+    public void ControlsListView()
+    {
+        isControlListOpen = !isControlListOpen;
+        controlListPanel.SetActive(isControlListOpen);
     }
 
     public void SettingsPanelView()

@@ -30,9 +30,9 @@ public class MenuManager : MonoBehaviour
     [SerializeField] Text p2ReadyText;
 
     [Header("Panels")]
-    [SerializeField] GameObject mainMenuPanel;
-    [SerializeField] GameObject GamePanel;
+    [SerializeField] GameObject gamePanel;
     [SerializeField] GameObject settingsPanel;
+    [SerializeField] GameObject controlListPanel;
 
     [Header("Split Screen Mode Toggles")]
     [SerializeField] Toggle verticalToggle;
@@ -45,7 +45,7 @@ public class MenuManager : MonoBehaviour
 
     private int keyboardCurrentPosition= 1 , joystickCurrentPosition =1;
 
-    private bool isSettingsPanelOpen = false , isGamePanelOpen = false;
+    private bool isSettingsPanelOpen = false , isGamePanelOpen = false , isControlListOpen = false;
 
     public void OnBack(InputAction.CallbackContext value)
     {
@@ -212,7 +212,13 @@ public class MenuManager : MonoBehaviour
     {
         ResetSelecting();
         isGamePanelOpen = !isGamePanelOpen;
-        GamePanel.SetActive(isGamePanelOpen);
+        gamePanel.SetActive(isGamePanelOpen);
+    }
+
+    public void ControlsListView()
+    {
+        isControlListOpen = !isControlListOpen;
+        controlListPanel.SetActive(isControlListOpen);
     }
 
     public void ResetSelecting()
