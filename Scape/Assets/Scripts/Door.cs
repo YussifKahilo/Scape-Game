@@ -14,7 +14,7 @@ public class Door : MonoBehaviour
         doorKey.SetActive(false);
     }
 
-    void Update()
+    public void LocatePlayer()
     {
         bool scalePlayerHint = Vector3.Distance(doorKey.transform.position, GameManager.instance.scalePlayer.transform.position) < dis
             && GameManager.instance.scalePlayer.GetComponent<PlayerManager>().PlayerHaveKey;
@@ -29,5 +29,10 @@ public class Door : MonoBehaviour
     {
         doorKey.SetActive(true);
         anim.SetBool("Open" , true);
+    }
+
+    public void Close()
+    {
+        anim.SetBool("Open", false);
     }
 }

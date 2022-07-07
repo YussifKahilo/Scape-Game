@@ -86,7 +86,7 @@ public class PlayerController : MonoBehaviour
     }
 
     private void FixedUpdate()
-    {
+    {   
         anim.SetFloat("Speed" ,speed * inputMovement.magnitude);
         transform.Translate(inputMovement * speed * Time.fixedDeltaTime);
     }

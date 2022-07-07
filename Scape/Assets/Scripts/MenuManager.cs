@@ -248,7 +248,7 @@ public class MenuManager : MonoBehaviour
 
         SetDeviceImage(isKeyboard ,position);
 
-        SetHintImage(isKeyboard);
+        SetHintImage();
         
     }
 
@@ -302,10 +302,10 @@ public class MenuManager : MonoBehaviour
         }
     }
 
-    void SetHintImage(bool isKeyboard)
+    void SetHintImage()
     {
         int imageIndex;
-        if (Gamepad.current.ToString().StartsWith("X") || Gamepad.current.ToString().StartsWith("x"))
+        if (Gamepad.current != null && (Gamepad.current.ToString().StartsWith("X") || Gamepad.current.ToString().StartsWith("x")))
         {
             imageIndex = 1;
         }

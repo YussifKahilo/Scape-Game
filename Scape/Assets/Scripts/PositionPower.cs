@@ -38,11 +38,15 @@ public class PositionPower : MonoBehaviour, PlayerPower
             GetComponent<PlayerController>().enabled = false;
             agent.enabled = true;
             returningEffectPlaying = true;
+            GetComponent<CapsuleCollider>().enabled = false;
             agent.SetDestination(currentSaveEffect.transform.position);
         }
         else
         {
-            currentSaveEffect = Instantiate(positionSaveEffect , transform.position + new Vector3(0 , 1 , 0), Quaternion.identity).gameObject;
+
+            currentSaveEffect = Instantiate(positionSaveEffect,
+                    transform.position + new Vector3(0, 1, 0), Quaternion.identity).gameObject;
+
             currentSaveEffect.GetComponent<ParticleSystem>().Play();
             positionSaved = true;
         }
@@ -58,13 +62,17 @@ public class PositionPower : MonoBehaviour, PlayerPower
         modelMesh.SetActive(true);
         traceEffect.gameObject.SetActive(false);
         traceEffect.Stop();
+        GetComponent<CapsuleCollider>().enabled = true;
         GetComponent<PlayerController>().enabled = true;
-        transform.position = currentSaveEffect.transform.position - new Vector3(0 , 1 , 0);
         Destroy(currentSaveEffect);
     }
 
-    void CancelPower()
+    public void CancelPower()
     {
+        if (!positionSaved)
+        {
+            return;
+        }
         positionSaved = false;
         currentSaveEffect.GetComponent<ParticleSystem>().Stop();
         StartCoroutine(DestroyAfterTime(currentSaveEffect));
@@ -85,7 +93,10 @@ public class PositionPower : MonoBehaviour, PlayerPower
 
     private void Update()
     {
-        if (positionSaved && returningEffectPlaying && Vector3.Distance(transform.position , currentSaveEffect.transform.position) < 1)
+        if (positionSaved && returningEffectPlaying && Vector3.Distance(transform.position , currentSaveEffect.transform.position) <= 0.5
+            || positionSaved && returningEffectPlaying &&
+            Vector3.Distance(new Vector3(transform.position.x,currentSaveEffect.transform.position.y, transform.position.z),
+            currentSaveEffect.transform.position) <= 0.1)
         {
             EndPower();
         }

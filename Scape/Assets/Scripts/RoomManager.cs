@@ -7,6 +7,7 @@ public class RoomManager : MonoBehaviour
     [SerializeField] GameObject[] rooms;
 
     private Room currentRoom;
+    private Room nextRoom;
 
     public static RoomManager instance;
 
@@ -19,10 +20,39 @@ public class RoomManager : MonoBehaviour
 
     public void SetRoom(int room)
     {
-        currentRoom = Instantiate(rooms[room - 1]).GetComponent<Room>();
+        if (currentRoom == null)
+        {
+            currentRoom = Instantiate(rooms[room - 1]).GetComponent<Room>();
+        }
+        else
+        {
+            currentRoom = nextRoom;
+        }
+
         if (room < rooms.Length)
         {
-            Instantiate(rooms[room]);
+            nextRoom = Instantiate(rooms[room]).GetComponent<Room>();
+            DoorManager.instance.NextDoor = nextRoom.RoomDoor;
+        }
+        else
+        {
+            nextRoom = null;
+        }
+    }
+
+    void LoadNewRoom()
+    {
+        DoorManager.instance.CloseDoor();
+        GameManager.instance.CurrentRoom++;
+        GameManager.instance.positionPlayer.GetComponent<PositionPower>().CancelPower();
+        SetRoom(GameManager.instance.CurrentRoom);
+    }
+
+    private void Update()
+    {
+        if (nextRoom != null && nextRoom.NumberOfPlayersInRoom == 2)
+        {
+            LoadNewRoom();
         }
     }
 

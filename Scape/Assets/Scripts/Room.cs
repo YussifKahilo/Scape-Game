@@ -9,6 +9,8 @@ public class Room : MonoBehaviour
 
     internal Door RoomDoor { get => roomDoor; }
 
+    internal int NumberOfPlayersInRoom { get => numberOfPlayersInRoom; set => numberOfPlayersInRoom = value; }
+
     private void OnTriggerEnter(Collider collider)
     {
         if (collider.CompareTag("Player"))

@@ -35,12 +35,12 @@ public class SettingsManager : MonoBehaviour
         PlayerPrefs.SetInt(pp_spliteMode, isVerticalSplitScreen ? 1 : 0);
     }
 
-    public Rect GetPlayer1SplitView()
+    public Rect GetPlayer2SplitView()
     {
         return isVerticalSplitScreen ? p1V : p1H;
     }
 
-    public Rect GetPlayer2SplitView()
+    public Rect GetPlayer1SplitView()
     {
         return isVerticalSplitScreen ? p2V : p2H;
     }

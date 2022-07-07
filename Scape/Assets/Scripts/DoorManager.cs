@@ -15,9 +15,19 @@ public class DoorManager : MonoBehaviour
         instance = this;
     }
 
+    private void Update()
+    {
+        nextDoor.LocatePlayer();
+    }
+
     public void OpenDoor()
     {
         nextDoor.Open();
+    }
+
+    public void CloseDoor()
+    {
+        nextDoor.Close();
     }
 
 }

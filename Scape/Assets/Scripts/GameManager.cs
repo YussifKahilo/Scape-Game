@@ -15,9 +15,11 @@ public class GameManager : MonoBehaviour
     public GameObject scalePlayer;
     public GameObject positionPlayer;
 
-    int currentRoom = 1;
+    private int currentRoom = 1;
 
     public static GameManager instance;
+
+    internal int CurrentRoom { get => currentRoom; set => currentRoom = value; }
 
     private void Start()
     {
@@ -49,6 +51,7 @@ public class GameManager : MonoBehaviour
 
         positionPlayer.GetComponent<PlayerController>().CameraHolder.transform.GetChild(0).GetChild(0).SetParent(null);
 
+
         Destroy(positionPlayer.transform.GetChild(positionPlayer.transform.childCount - 1).gameObject);
         Destroy(positionPlayer.GetComponent<ScalePower>());
     }
@@ -69,15 +72,26 @@ public class GameManager : MonoBehaviour
 
         scalePlayer.GetComponent<PlayerController>().CameraHolder.transform.GetChild(0).GetChild(0).SetParent(null);
 
+
         Destroy(scalePlayer.GetComponent<UnityEngine.AI.NavMeshAgent>());
 
         Destroy(scalePlayer.GetComponent<PositionPower>());
+
+    }
+
+    void SetHintImages()
+    {
+        scalePlayer.GetComponent<PlayerManager>().SetHintImage();
+        positionPlayer.GetComponent<PlayerManager>().SetHintImage();
     }
 
     void StartGame()
     {
         SetPositionPlayer();
         SetScalePlayer();
+
+        Invoke("SetHintImages" , 0.5f);
+
         SetRoom();
         SetSpitView();
     }
@@ -99,8 +113,6 @@ public class GameManager : MonoBehaviour
     void SetRoom()
     {
         RoomManager.instance.SetRoom(currentRoom);
-
-        DoorManager.instance.NextDoor = RoomManager.instance.CurrentRoom.RoomDoor;
     }
 }
 
